@@ -1,0 +1,76 @@
+=======================================
+ _____ _______  __  __  __ _______  __
+|_   _| ____\ \/ / |  \/  | ____\ \/ /
+  | | |  _|  \  /  | |\/| |  _|  \  / 
+  | | | |___ /  \  | |  | | |___ /  \ 
+  |_| |_____/_/\_\ |_|  |_|_____/_/\_\
+                                      
+=======================================
+
+Objectives:
+1) Rasterizing from homogenous clip space to screen space
+2) Texture map a triangle
+3) Lighting a triangle using a dot product to the light source
+
+Homogenous clip space ranges from from -1 on the left edge to +1 on the right
+edge (x), -1 on the top edge to +1 on the bottom edge (y). (0,0) is therefore
+dead center in the screen.
+
+It is called clip space since any pixel that should get rendered outside of
+this range gets silently discarded (clipped away). The user will enter
+triangle coordinates in clip space, and you need to raster it into screen
+space (rows and columns, which you're probably used to). This involves knowing
+the size of the screen, which can be provided by the colors library. See the
+demo code in main.cc how that works.
+
+Grading:
+If you draw a wireframe triangle on the screen using homogenous clip space
+coordinates: D
+If you draw a filled triangle on the screen using homogenous clip space
+coordinates: C
+If you draw a textured mapped triangle on the screen using HCSC: B
+If you draw and light a textured triangle on the screen using HCSC: A
+
+Instructions:
+1) You can either prompt the user for a filename to open containing an image, or
+you can hardcode one. I have provided code that will open an image and put it
+into a vector containing image data.
+
+Prompt the user for three coordinates of triangle vertices as well as their
+U,V values. Coordinates above 1 or below -1 will be clipped off the screen,
+but you will still need the vertex since it could fill across the screen. For
+example, a triangle from (0,0) - the center of the screen - to (10,0) and
+(5,5) will have most of the triangle clipped off the screen since the screen
+only displays -1 to +1 in the x and y directions, but you will draw whatever
+pixels that fit on the screen. This is basically the same assignment as the
+last one, but you will need to convert from HCSC to screenspace coordinates and
+everything else is the same.
+
+Start by just filling the triangle like last time.
+
+Then add in colors. This time, the colors do not come from the vertices, but
+rather from the image. Which pixel in the image do you grab to set the color?
+Well, that is where the (U,V) coordinates for each vertex comes in. The UV
+coordinates are the row and column of a pixel in the image. That pixel holds
+the RGB value you draw at that location.
+
+Ok, well that's three pixels - each of the vertices. But what about the pixels
+in between? Well, that's where barycentric coordinates come in. You
+interpolate between them the same way you interpolated between the RGB values
+in the last assignment. It's literally the same code, except you're only
+multiplying two values (U and V) instead of three values (R, G, B).
+
+Then when you're ready to light the triangle, if the triangle's normal is
+pointed at the sun (or the light source, I guess, but you don't need to worry
+about attenuation with the sun), you get 100% light. If the triangle is
+pointed away from or at 90 degrees to the sun, it gets 0% light. Otherwise, it
+gets the cosine of theta. So if you want to simulate the run rotating around
+the triangle, just redraw the triangle with theta advancing maybe a couple
+degrees each time. It'll look nice, probably.
+
+That's an A!
+
+
+
+
+
